@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Silvi ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf6f0;
+    --blush: #e8c5b5;
+    --rose: #c47a6a;
+    --deep: #3d2b2b;
+    --gold: #c9a96e;
+    --soft: #f0e6de;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.8s ease forwards;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Decorative petals background */
+  .screen::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(232,197,181,0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 75%, rgba(196,122,106,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(201,169,110,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Decorative line */
+  .deco-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+  .deco-line::before,
+  .deco-line::after {
+    content: '';
+    height: 1px;
+    width: 50px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+  .deco-line::after {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+  .deco-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 8vw, 3.2rem);
+    font-style: italic;
+    color: var(--rose);
+    line-height: 1.1;
+    margin-bottom: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--deep);
+    font-weight: 300;
+    margin-bottom: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  p strong {
+    font-weight: 400;
+    color: var(--rose);
+  }
+
+  .question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--deep);
+    margin: 28px 0 8px;
+    font-style: italic;
+  }
+
+  .subtext {
+    font-size: 0.85rem;
+    color: var(--rose);
+    opacity: 0.8;
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  /* Options grid */
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .option-btn {
+    background: white;
+    border: 1.5px solid var(--blush);
+    color: var(--deep);
+    font-family: 'Lato', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 400;
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    letter-spacing: 0.01em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--soft);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+    z-index: 0;
+  }
+
+  .option-btn:hover::before { transform: scaleX(1); }
+  .option-btn:hover { border-color: var(--rose); }
+  .option-btn span { position: relative; z-index: 1; }
+
+  .option-btn.wrong {
+    animation: shake 0.45s ease;
+    border-color: #c47a6a88;
+    background: #fdf0ec;
+    color: #a05a4a;
+  }
+
+  .option-btn.correct {
+    border-color: var(--gold);
+    background: #fdf8ee;
+    animation: pulse 0.5s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+
+  /* Wrong message */
+  .wrong-msg {
+    font-size: 0.8rem;
+    color: var(--rose);
+    font-style: italic;
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-top: 4px;
+    height: 18px;
+  }
+  .wrong-msg.show { opacity: 1; }
+
+  /* Correct screen */
+  .checklist {
+    background: white;
+    border: 1px solid var(--blush);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 24px 0;
+    text-align: left;
+  }
+
+  .checklist p {
+    margin: 0 0 8px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .checklist p:last-child { margin: 0; }
+
+  /* Final screen */
+  .heart-deco {
+    font-size: 2rem;
+    margin: 16px 0;
+    display: block;
+    animation: heartbeat 2s ease infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.08); }
+    56% { transform: scale(1); }
+  }
+
+  .signature {
+    margin-top: 32px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--rose);
+    line-height: 1.6;
+  }
+
+  .year-tag {
+    display: inline-block;
+    background: var(--soft);
+    border: 1px solid var(--blush);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--rose);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 999;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Progress dots */
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--blush);
+    transition: background 0.3s;
+  }
+  .dot.active { background: var(--rose); }
+  .dot.done { background: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: Welcome -->
+<div class="screen active" id="screen1">
+  <div class="content">
+    <div class="progress-dots">
+      <div class="dot active" id="d1"></div>
+      <div class="dot" id="d2"></div>
+      <div class="dot" id="d3"></div>
+      <div class="dot" id="d4"></div>
+      <div class="dot" id="d5"></div>
+    </div>
+    <div class="deco-line"><div class="deco-dot"></div></div>
+    <span class="year-tag">2015 — siempre</span>
+    <h1>Silvi,</h1>
+    <p>Desde aquella primera semana de 2015 quedó bastante claro que las tres veníamos en combo. Y aunque en todos estos años pasaron mil cosas, hay algo que nunca cambió: cuando una necesita algo, las otras dos aparecen.</p>
+    <p>Así que en la organización de este casamiento hay algo de lo que <strong>nos vamos a encargar nosotras.</strong></p>
+    <p class="question">La pregunta es...</p>
+    <p>¿Podés adivinar qué es?</p>
+    <p class="subtext">Elegí con cuidado. O no. Porque sabemos que te vas a equivocar varias veces.</p>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>La deco del lugar</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, true, 1)"><span>La despedida de soltera</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Un stripper sorpresa</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Un juez trucho para hacer una boda falsa</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Una coreografía obligatoria para el casamiento</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Un discurso con lágrimas</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Lugar para que te arregles</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Los championes para cuando estés incómoda</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 1)"><span>Una asistente que te dé agua toda la noche</span></button>
+    </div>
+    <div class="wrong-msg" id="wrong1">Mmm... no. Intentá de nuevo 😏</div>
+  </div>
+</div>
+
+<!-- SCREEN 2: Correct - Despedida -->
+<div class="screen" id="screen2">
+  <div class="content">
+    <div class="progress-dots">
+      <div class="dot done" id="d1b"></div>
+      <div class="dot active"></div>
+      <div class="dot" id="d3b"></div>
+      <div class="dot" id="d4b"></div>
+      <div class="dot" id="d5b"></div>
+    </div>
+    <div class="deco-line"><div class="deco-dot"></div></div>
+    <h1>¡Correcto!</h1>
+    <p>Obviamente te vamos a organizar una despedida de soltera.</p>
+    <p>Porque si algo tenemos claro es que una buena despedida necesita:</p>
+    <div class="checklist">
+      <p>✔️ skincare</p>
+      <p>✔️ algo para tomar (alcohol)</p>
+      <p>✔️ pijamas</p>
+      <p>✔️ chusmerío</p>
+      <p>✔️ risas hasta que duela la panza</p>
+    </div>
+    <p>Así que sí, eso ya está contemplado.</p>
+    <p>Pero... ¿pensabas que era el único regalo?</p>
+    <p style="margin-bottom:0;"><strong>Hay algo más.</strong> Y creemos que podés adivinarlo.</p>
+    <p class="question" style="margin-top:28px;">¿Qué otra cosa podríamos regalarte?</p>
+    <div class="options" style="margin-top:8px;">
+      <button class="option-btn" onclick="checkAnswer(this, false, 2)"><span>El desayuno del día después</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 2)"><span>Una sesión de spa para los novios</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 2)"><span>Un masaje relajante post casamiento</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, true, 2)"><span>Una noche para ustedes dos</span></button>
+      <button class="option-btn" onclick="checkAnswer(this, false, 2)"><span>Cupón de Better Life para limpiar el vestido y traje</span></button>
+    </div>
+    <div class="wrong-msg" id="wrong2">Mmm... no. Pensá mejor 💭</div>
+  </div>
+</div>
+
+<!-- SCREEN 3: Final -->
+<div class="screen" id="screen3">
+  <div class="content">
+    <div class="progress-dots">
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot done"></div>
+      <div class="dot active"></div>
+    </div>
+    <div class="deco-line"><div class="deco-dot"></div></div>
+    <span class="heart-deco">❤️</span>
+    <h1>¡Exacto!</h1>
+    <p>Con todas las cosas que tenés que planificar, organizar y pensar para ese día, queríamos ocuparnos de una parte nosotras.</p>
+    <p>Por eso, además de una despedida de soltera como corresponde, queremos que tengas pronto <strong>el lugar donde vas a aprontarte, maquillarte, merendar</strong> (sí, obligatoriamente) y disfrutar las horas previas rodeada de las personas que más te quieren.</p>
+    <p>Y cuando termine toda la locura, los nervios, la emoción, el baile y los festejos, también queremos que tengan algo reservado para ustedes.</p>
+    <p>Por eso, tu regalo es <strong>el lugar para prepararte el día de la boda y la noche de bodas.</strong></p>
+    <p>Un espacio para vivir cada momento con calma, brindar, recordar todo lo vivido y empezar esta nueva etapa como corresponde.</p>
+    <div class="deco-line" style="margin-top:32px;margin-bottom:24px;"><div class="deco-dot"></div></div>
+    <div class="signature">
+      Con todo nuestro amor,<br><br>
+      Las mismas dos que conociste en 2015<br>
+      y que desde entonces no se despegan de vos.<br><br>
+      <strong style="font-size:1.2rem;">Caro y Sofi ❤️</strong>
+    </div>
+  </div>
+</div>
+
+<script>
+  let wrongCount = [0, 0];
+
+  function checkAnswer(btn, isCorrect, round) {
+    const buttons = btn.parentElement.querySelectorAll('.option-btn');
+    const wrongMsg = document.getElementById('wrong' + round);
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      buttons.forEach(b => b.disabled = true);
+      launchConfetti();
+      setTimeout(() => {
+        goToScreen(round === 1 ? 'screen2' : 'screen3');
+      }, 900);
+    } else {
+      wrongCount[round - 1]++;
+      btn.classList.add('wrong');
+      wrongMsg.classList.add('show');
+
+      const msgs1 = [
+        'Mmm... no. Intentá de nuevo 😏',
+        'Casi... mentira, para nada 😂',
+        '¡Tan difícil no es! Seguí probando ✨',
+        'Nope. Pero confiamos en vos 💅',
+      ];
+      const msgs2 = [
+        'Mmm... no. Pensá mejor 💭',
+        'Más cerca... no, mentira 😂',
+        '¡Dale! Ya casi llegás 😉',
+        'Una más y la tenés, te lo prometemos ✨',
+      ];
+      const msgs = round === 1 ? msgs1 : msgs2;
+      wrongMsg.textContent = msgs[Math.min(wrongCount[round - 1] - 1, msgs.length - 1)];
+
+      setTimeout(() => {
+        btn.classList.remove('wrong');
+        wrongMsg.classList.remove('show');
+      }, 1800);
+    }
+  }
+
+  function goToScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
+    const target = document.getElementById(id);
+    target.style.display = 'flex';
+    requestAnimationFrame(() => target.classList.add('active'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function launchConfetti() {
+    const colors = ['#e8c5b5', '#c47a6a', '#c9a96e', '#f0e6de', '#d4a5a5'];
+    for (let i = 0; i < 50; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.top = '-10px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.width = (6 + Math.random() * 6) + 'px';
+      c.style.height = (6 + Math.random() * 6) + 'px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+  }
+</script>
+</body>
+</html>
